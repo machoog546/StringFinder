@@ -67,6 +67,8 @@ for folder, subfolders, files in os.walk(whereAmI):
 
 usedJustToExit = input('Press enter or return to exit.')
 
-"""modified from file found at http://www.opentechguides.com/how-to/article/python/59/files-containing-text.html"""
-
-'''https://stackoverflow.com/questions/13779526/python-finding-substring-within-a-list'''
+"""modified from file(s) found at:
+http://www.opentechguides.com/how-to/article/python/59/files-containing-text.html
+https://stackoverflow.com/questions/13779526/python-finding-substring-within-a-list
+https://stackoverflow.com/questions/30444105/better-way-to-find-absolute-paths-during-os-walk
+"""
