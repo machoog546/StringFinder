@@ -13,47 +13,49 @@ print()
 
 whereAmI = os.getcwd() #defaults to current location if none given
 
-searchDir = input("-Directory to search? Leave blank for current:\n")
+searchDir = input("-Directory to search? Leave blank for current.\nCurrent is: " + whereAmI + "\n\nSearch Directory:")
 if searchDir != "":
     whereAmI = searchDir
 
+if whereAmI == "./":
+    answer = input("\nPath not found. (1)Exit or (2)Continue? - ")
+    if answer == "1":
+        quit()
+    elif answer == "2":
+        print("\nContinuing...\n\n")
 
-reply = input("-Include sub dirs? (yes or NO): ")
-if reply == "yes" or "y":
-    #use os to get all folders in Directory
-    print("\nNow looking at files in " + "\'" + whereAmI + "\' and it's child directories.\n\n")
-elif reply == "no" or "n":
-    print("\nCurrently looking only at log files in folder path " + "\'" + whereAmI + "\'.\n\n")
-    pass
-
-# Append a directory separator if not already present
 if not (whereAmI.endswith("/") or whereAmI.endswith("\\")):
     whereAmI = whereAmI + "/"
 
-
-print("Type in the phrase(s) you want to look for seperated by ' ^ '.\n\n")
+print("\n-Type in the phrase(s) you want to look for seperated by ' ^ '.\n\n")
 search_str = input("Look for: ")
 search_str = search_str.split(" ^ ")
 print("\n\n")
 
-if whereAmI == "./":
-    answer = input("Path not found. (1)Exit or (2)Continue? - ")
-    if answer == "1":
-        quit()
-    elif answer == "2":
-        print("Continuing...\n\n")
-
-
-
-
-"""
-Just place any directories you want to exclude in the exclude list like exclude = [‘Archive’, ‘Old’] and it will skip over those folders in real time.
-"""
-
-for folder, subfolders, files in os.walk(whereAmI):
-    for file in files:
+def FullSearch():
+    total = 0
+    for folder, subfolders, files in os.walk(whereAmI):
+        for file in files:
+            if file.endswith('.txt') or file.endswith('.text') or file.endswith('.log') or file.endswith('.out'):
+                total +=1
+                fo = open(os.path.join(folder, file), "r") # Open file for reading
+                try:                            # Due to encoding error, I'm making it skip a set encoding.
+                    readFile = fo.read()            # Read the first line from the file
+                except:
+                    #print("Decode error. Ignoring.\n")     *Use for debug only.
+                    pass
+                for phrase in search_str:
+                    if phrase in readFile:
+                        print("="*45 + "\n" + file + " contains search phrase\n\n \'" + phrase + "\'\n\n" +"Please review.\n" + "="*45 + "\n\n")
+                fo.close()          # Close the
+    print(str(total) + " file(s) checked.")
+def ParentOnly():
+    total = 0
+    for file in os.listdir(whereAmI):
+        print(file)
         if file.endswith('.txt') or file.endswith('.text') or file.endswith('.log') or file.endswith('.out'):
-            fo = open(whereAmI + files) # Open file for reading
+            total +=1
+            fo = open(file, "r")
             try:                            # Due to encoding error, I'm making it skip a set encoding.
                 readFile = fo.read()            # Read the first line from the file
             except:
@@ -61,14 +63,20 @@ for folder, subfolders, files in os.walk(whereAmI):
                 pass
             for phrase in search_str:
                 if phrase in readFile:
-                    print(readFile + " seams to contain search phrase\n\n" + phrase + "\n\n" +"Please review.\n=====================================\n\n")
-            fo.close()          # Close the
+                    print("="*45 + "\n" + file + " contains search phrase\n\n \'" + phrase + "\'\n\n" +"Please review.\n" + "="*45 + "\n\n")
+            fo.close()
+    print(str(total) + " file(s) checked.")
 
+reply = input("-Include subfolders? Default is yes. (YES or no): ")
+if reply == "yes" or reply == "y":
+    print("yes")
+    #use os to get all folders in Directory
+    print("\nNow looking at files in " + "\'" + whereAmI + "\' and it's child directories.\n\n")
+    FullSearch()
 
-usedJustToExit = input('Press enter or return to exit.')
+if reply == "no" or reply == "n":
+    print("No")
+    print("\nCurrently looking only at log files in folder path " + "\'" + whereAmI + "\'.\n\n")
+    ParentOnly()
 
-"""modified from file(s) found at:
-http://www.opentechguides.com/how-to/article/python/59/files-containing-text.html
-https://stackoverflow.com/questions/13779526/python-finding-substring-within-a-list
-https://stackoverflow.com/questions/30444105/better-way-to-find-absolute-paths-during-os-walk
-"""
+usedJustToExit = input('Press return to exit.')
