@@ -8,8 +8,7 @@ logo = """   _____ __       _                _______           __
  ___/ / /_/ /  / / / / / /_/ /  / __/ / / / / / /_/ /  __/ /
 /____/\__/_/  /_/_/ /_/\__, /  /_/   /_/_/ /_/\__,_/\___/_/
                       /____/                                    """
-print(Fore.GREEN + logo + Style.RESET_ALL + "v.01\n")
-print()
+print(Fore.GREEN + logo + Style.RESET_ALL + "v.01\n\n")
 
 whereAmI = os.getcwd() #defaults to current location if none given
 
@@ -49,6 +48,7 @@ def FullSearch():
                         print("="*45 + "\n" + file + " contains search phrase\n\n \'" + phrase + "\'\n\n" +"Please review.\n" + "="*45 + "\n\n")
                 fo.close()          # Close the
     print(str(total) + " file(s) checked.")
+	
 def ParentOnly():
     total = 0
     for file in os.listdir(whereAmI):
@@ -68,7 +68,8 @@ def ParentOnly():
     print(str(total) + " file(s) checked.")
 
 reply = input("-Include subfolders? Default is yes. (YES or no): ")
-if reply == "yes" or reply == "y":
+
+if reply == "yes" or reply == "y" or reply == "":
     print("yes")
     #use os to get all folders in Directory
     print("\nNow looking at files in " + "\'" + whereAmI + "\' and it's child directories.\n\n")
